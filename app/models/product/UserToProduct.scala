@@ -10,7 +10,18 @@ case class UserToProduct (_id: String,
                      productIndex: String,
                      userId: String,
                      crDate: DateTime,
-                     updDate: DateTime)
+                     updDate: DateTime) {
+  override def toString: String = {
+    var p = "UserToProduct \n"
+    p += "\n _id          - " + _id
+    p += "\n productId    - " + productId
+    p += "\n productIndex - " + productIndex
+    p += "\n userId       - " + userId
+    p += "\n crDate       - " + crDate
+    p += "\n updDate      - " + updDate + "\n]"
+    p
+  }
+}
 
 
 
