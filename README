@@ -1,4 +1,6 @@
-This is your new Play application
-=================================
+front end to talk to sellem-mongodb
 
-This file will be packaged with your application, when using `activator dist`.
+localhost:9000/
+localhost:9000/login
+localhost:9000/listproducts
+localhost:9000/listregisteredusers

@@ -12,11 +12,6 @@ import scala.collection.mutable.ListBuffer
 
 object Application extends Controller {
 
-  //def index = Action {
-  //  Logger.info("Application index")
-  //  Ok(views.html.index("Your new application is ready."))
-  //}
-
   def index = Action {
     Logger.info("LoginController showLogin")
     var lOfRegisteredUser = ListBuffer[RegisteredUser]()
