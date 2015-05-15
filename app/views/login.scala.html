@@ -1,0 +1,12 @@
+@(loginForm: Form[forms.LoginForm])
+
+@main("Sell My Things") {
+<div class="features">
+    @helper.form(action = routes.LoginController.post()) {
+    @helper.inputText(loginForm("userId"))
+    @helper.inputText(loginForm("password"))
+    <button name="login">Login</button>
+    }
+
+</div>
+}

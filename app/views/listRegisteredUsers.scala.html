@@ -1,0 +1,30 @@
+@(message: String)(registeredUsers:scala.collection.mutable.ListBuffer[models.authentication.RegisteredUser])
+
+@main("Sell My Things") {
+<h2>Registered Users</h2>
+<div class='center'>
+    <table>
+        <tr>
+            <th>FirstName</th>
+            <th>Last Name</th>
+            <th>userId</th>
+            <th>password</th>
+            <th>authorityLevel</th>
+            <th>email</th>
+            <th>telephone</th>
+        </tr>
+        @for(registeredUser <- registeredUsers) {
+            <tr>
+                <td>@registeredUser.firstName</td>
+                <td>@registeredUser.lastName</td>
+                <td>@registeredUser.userId</td>
+                <td>@registeredUser.password</td>
+                <td>@registeredUser.authorityLevel</td>
+                <td>@registeredUser.email</td>
+                <td>@registeredUser.telephone</td>
+            </tr>
+        }
+        </c:forEach>
+    </table>
+</div>
+}
