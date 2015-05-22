@@ -14,6 +14,9 @@ POST    /login                      controllers.LoginController.post
 
 GET     /listproducts               controllers.ProductController.listProducts
 
+GET      /SearchCatalog              controllers.ProductController.showSearchCatalog
+POST     /postSearchCatalog          controllers.ProductController.postSearchCatalog
+
 GET     /listregisteredusers        controllers.RegisteredUserController.listRegisteredUsers
 
 # Map static resources from the /public folder to the /assets URL path
