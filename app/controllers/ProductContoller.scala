@@ -74,7 +74,7 @@ object ProductController extends Controller {
     mapping(
       "author"  -> text,
       "title" -> text,
-      "productID" -> text,
+      "productId" -> text,
       "manufacturer" -> text
     )(SearchCatalogueForm.apply)(SearchCatalogueForm.unapply)
 
@@ -87,20 +87,21 @@ object ProductController extends Controller {
   }
 
   def postSearchCatalog  = Action.async { implicit request =>
-    Logger.info("ProductController searchCatalog")
+    Logger.info("ProductController postSearchCatalog")
     var lOfProducts = ListBuffer [Product]()
 
     searchCatalogueForm.bindFromRequest.fold (
       formWithErrors => {
+        println("Form had errors")
         Future.successful(BadRequest( views.html.searchCatalogue(formWithErrors)))
       },
       catalogue => {
         Logger.info(catalogue.author)
         Logger.info(catalogue.title)
-        Logger.info(catalogue.productID)
+        Logger.info(catalogue.productId)
         Logger.info(catalogue.manufacturer)
         var lOfProducts = ListBuffer[Product]()
-        val url = "http://localhost:9010/searchCatalogue?author=" + catalogue.author + "&title=" + catalogue.title + "&productID=" + catalogue.productID  + "&manufacturer=" + catalogue.manufacturer
+        val url = "http://localhost:9010/searchCatalogue?author=" + catalogue.author + "&title=" + catalogue.title + "&productId=" + catalogue.productId  + "&manufacturer=" + catalogue.manufacturer
         Logger.info(url)
         val responseFuture = WS.url(url).get()
         responseFuture map { response =>
