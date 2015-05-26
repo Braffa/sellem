@@ -1,0 +1,14 @@
+@(searchCatalogueForm: Form[forms.SearchCatalogueForm])
+
+@main("Sell My Things") {
+<div class="features">
+    @helper.form(action = routes.ProductController.postSearchCatalog()) {
+    @helper.inputText(searchCatalogueForm("author"))
+    @helper.inputText(searchCatalogueForm("title"))
+    @helper.inputText(searchCatalogueForm("productId"))
+    @helper.inputText(searchCatalogueForm("manufacturer"))
+    <button name="Search">Search</button>
+    }
+
+</div>
+}
