@@ -69,6 +69,46 @@ object ProductController extends Controller {
     }
   }
 
+  def findMyProducts = Action.async {
+    Logger.info("ProductController findMyProducts")
+    var lOfProducts = ListBuffer [Product]()
+    val userId = "Braffa"
+    val url = "http://localhost:9010/findmyproducts?userId=" + userId
+    Logger.info(url)
+    val responseFuture = WS.url(url).get()
+    responseFuture map { response =>
+      response.status match {
+        case 200 => {
+          val products = Json.toJson(response.json)
+          var index = 0
+          for (s <- (products \\ "_id")) {
+            val product = new Product(
+              (products \\ "_id")(index).toString.replace('"', ' ').trim,
+              (products \\ "author")(index).toString.replace('"', ' ').trim,
+              (products \\ "imageURL")(index).toString.replace('"', ' ').trim,
+              (products \\ "imageLargeURL")(index).toString.replace('"', ' ').trim,
+              (products \\ "manufacturer")(index).toString.replace('"', ' ').trim,
+              (products \\ "productIndex")(index).toString.replace('"', ' ').trim,
+              (products \\ "productgroup")(index).toString.replace('"', ' ').trim,
+              (products \\ "productId")(index).toString.replace('"', ' ').trim,
+              (products \\ "productidtype")(index).toString.replace('"', ' ').trim,
+              (products \\ "source")(index).toString.replace('"', ' ').trim,
+              (products \\ "sourceid")(index).toString.replace('"', ' ').trim,
+              (products \\ "title")(index).toString.replace('"', ' ').trim,
+              convertDate((products \\ "crDate")(index).toString.replace('"', ' ').trim),
+              convertDate((products \\ "updDate")(index).toString.replace('"', ' ').trim)
+            )
+            Logger.info(product.toString)
+            lOfProducts += product
+            index += 1
+          }
+          Ok(views.html.listProducts("List of All products")((lOfProducts)))
+        }
+        case _ => Ok("got here ")
+      }
+    }
+
+  }
 
   lazy val searchCatalogueMapping: Mapping[SearchCatalogueForm] =
     mapping(

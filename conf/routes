@@ -14,8 +14,11 @@ POST    /login                      controllers.LoginController.post
 
 GET     /listproducts               controllers.ProductController.listProducts
 
-GET      /SearchCatalog              controllers.ProductController.showSearchCatalog
-POST     /postSearchCatalog          controllers.ProductController.postSearchCatalog
+GET      /searchcatalogue            controllers.ProductController.showSearchCatalog
+POST     /postsearchcatalogue        controllers.ProductController.postSearchCatalog
+
+GET      /findmyproducts            controllers.ProductController.findMyProducts
+
 
 GET     /listregisteredusers        controllers.RegisteredUserController.listRegisteredUsers
 
