@@ -6,4 +6,7 @@ package forms
 case class LoginForm (
   userId: String,
   password: String
-                       )
+                       ) {
+  override def toString: String = {"\nuserId   - " + userId + "\npassword - " + password }
+
+}

@@ -40,6 +40,12 @@ object LoginController extends Controller {
     Ok(views.html.login(loginForm))
   }
 
+  def signOut = Action {
+    Logger.info("LoginController signOut")
+    var lOfRegisteredUser = ListBuffer[RegisteredUser]()
+    Ok(views.html.login(loginForm))
+  }
+
   def post  = Action.async { implicit request =>
     Logger.info("LoginController post")
     loginForm.bindFromRequest.fold (
@@ -47,8 +53,7 @@ object LoginController extends Controller {
         Future.successful(BadRequest( views.html.login(formWithErrors)))
       },
       login => {
-        Logger.info(login.userId)
-        Logger.info(login.password)
+        Logger.info(login.toString)
         var lOfRegisteredUser = ListBuffer[RegisteredUser]()
         val url = "http://localhost:9010/login?userId=" + login.userId
         Logger.info(url)

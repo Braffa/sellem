@@ -7,5 +7,11 @@ case class SearchCatalogueForm    (
             author: String,
             title: String,
             productId: String,
-            manufacturer: String
-                                  )
+            manufacturer: String) {
+
+  override def toString: String = { "\nauthor       - " + author +
+                                    "\ntitle        - " + title +
+                                    "\nproductId    - " + productId +
+                                    "\nmanufacturer - " + manufacturer
+  }
+}
