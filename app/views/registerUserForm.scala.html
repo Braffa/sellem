@@ -1,0 +1,17 @@
+@(registerUserForm: Form[forms.RegisterUserForm])
+
+@main("Sell My Things") {
+<div class="features">
+    @helper.form(action = routes.RegisteredUserController.postRegisterUser()) {
+    @helper.inputText(registerUserForm("authorityLevel"))
+    @helper.inputText(registerUserForm("email"))
+    @helper.inputText(registerUserForm("firstName"))
+    @helper.inputText(registerUserForm("lastName"))
+    @helper.inputText(registerUserForm("password"))
+    @helper.inputText(registerUserForm("telephone"))
+    @helper.inputText(registerUserForm("userId"))
+    <button name="Save">Save</button>
+    }
+
+</div>
+}

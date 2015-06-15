@@ -1,0 +1,21 @@
+@(productForm: Form[forms.ProductForm])
+
+@main("Sell My Things") {
+<div class="features">
+    @helper.form(action = routes.ProductController.postISBNInput()) {
+    @helper.inputText(productForm("author"))
+    @helper.inputText(productForm("title"))
+    @helper.inputText(productForm("productid"))
+    @helper.inputText(productForm("manufacturer"))
+    @helper.inputText(productForm("productgroup"))
+    @helper.inputText(productForm("productidtype"))
+    @helper.inputText(productForm("productIndex"))
+    @helper.inputText(productForm("imageURL"))
+    @helper.inputText(productForm("imageLargeURL"))
+    @helper.inputText(productForm("source"))
+    @helper.inputText(productForm("sourceid"))
+    <button name="Save">Save</button>
+    }
+
+</div>
+}
