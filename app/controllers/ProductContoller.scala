@@ -8,6 +8,7 @@ import com.sun.org.apache.xalan.internal.xsltc.trax.DOM2SAX
 import forms.{ProductForm, SearchCatalogueForm}
 import org.joda.time.DateTime
 import org.w3c.dom.{Element, NodeList, Document}
+import views.html.helper.form
 
 import scala.xml.Node
 
@@ -197,11 +198,13 @@ object ProductController extends Controller {
       "sourceid" -> text
     )(ProductForm.apply)(ProductForm.unapply)
 
-  val productForm = Form[ProductForm](productFormMapping)
+  var productForm = Form[ProductForm](productFormMapping)
+
 
   def showProductForm = Action {
     Logger.info("ProductController showProductForm")
-    productLookUp ("5060088823156", "EAN")
+    //productLookUp ("5060088823156", "EAN")
+    //val product = lOfProducts (0)
     Ok(views.html.productForm(productForm))
   }
 
@@ -254,17 +257,29 @@ object ProductController extends Controller {
         Ok("fucked Up")
         //Future.successful(BadRequest( views.html.productForm(formWithErrors)))
       },
-      productForm => {
+      productFormIn => {
         Logger.info(productForm.toString)
-        val productId = productForm.productid
+        val productId = productFormIn.productid
         productLookUp(productId, "EAN")
-        Ok(views.html.listProducts("List of All products")((lOfProducts)))
+        Logger.info("list size " + lOfProducts.size)
+        if (lOfProducts.size > 1) {
+          Ok(views.html.listProducts("List of All products")((lOfProducts)))
+        } else {
+          val product = lOfProducts (0)
+          var pf = new ProductForm (product.author, product.title, product.productId, product.manufacturer,
+                              product.productgroup, product.productidtype, product.productIndex,
+                              product.imageURL, product.imageLargeURL, product.source, product.sourceid)
+          Logger.info("set up the productform" + pf.toString)
+          val filledform = productForm.fill(pf)
+          Ok(views.html.productForm(filledform))
+        }
       }
     )
   }
 
   def postProductInput = Action.async { implicit request =>
     Logger.info("ProductController postProductInput")
+    val product = lOfProducts (0)
     productForm.bindFromRequest.fold (
       formWithErrors => {
         Logger.info("form had errors" + formWithErrors.errorsAsJson)
