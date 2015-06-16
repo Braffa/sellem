@@ -330,6 +330,13 @@ ul.list li a:hover {
 	background: url(../images/news_icon.gif) no-repeat center;
 }
 
+.addProduct_icon {
+	width: 345px;
+	height: 500px;
+	float: left;
+	background: url(../images/news_icon.gif) no-repeat center;
+}
+
 .product_content {
 	width: 700px;
 	float: left;
@@ -338,12 +345,28 @@ ul.list li a:hover {
 	padding: 0 0 0 10px;
 	//color: #C0C0C0;
 }
-.product_details {
-	width: 500px;
-	float: left;
-	padding: 10px 0 10px 10px;
+.addProduct_content {
+	width: 400px;
+	float: right;
+	text-align: justify;
+	line-height: 20px;
+	padding: 0 0 0 10px;
 	//color: #C0C0C0;
 }
+
+.product_details {
+ 	width: 500px;
+ 	float: left;
+ 	padding: 10px 0 10px 10px;
+ 	//color: #C0C0C0;
+ }
+.addProduct_details {
+ 	width: 400px;
+ 	float: right;
+ 	padding: 10px 0 10px 10px;
+ 	//color: #C0C0C0;
+ }
+
 .user_product_details {
 	width: 500px;
 	float: left;

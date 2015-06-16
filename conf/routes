@@ -18,9 +18,10 @@ GET     /searchcatalogue            controllers.ProductController.showSearchCata
 POST    /postsearchcatalogue        controllers.ProductController.postSearchCatalog
 
 GET      /findmyproducts            controllers.ProductController.findMyProducts
-GET      /showProduct               controllers.ProductController.showProductForm
+GET      /showProduct               controllers.ProductController.showAddProductForm
 POST     /postProductInput          controllers.ProductController.postProductInput
-POST     /postISBNInput             controllers.ProductController.postISBNInput
+POST     /postISBNAddProduct        controllers.ProductController.postISBNAddProduct
+POST     /saveProduct               controllers.ProductController.saveProduct
 
 
 GET     /listregisteredusers        controllers.RegisteredUserController.listRegisteredUsers

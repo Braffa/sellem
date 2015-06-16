@@ -1,0 +1,10 @@
+@(addProductForm: Form[forms.AddProductForm])
+
+@main("Sell My Things") {
+<div class="features">
+    @helper.form(action = routes.ProductController.postISBNAddProduct()) {
+    @helper.inputText(addProductForm("productid"))
+    <button name="Find">Find</button>
+    }
+</div>
+}

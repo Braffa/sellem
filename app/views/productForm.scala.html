@@ -1,21 +1,33 @@
 @(productForm: Form[forms.ProductForm])
 
+
+
+@productForm("imageLargeURL").value
+
+productForm("imageLargeURL")
+
 @main("Sell My Things") {
 <div class="features">
-    @helper.form(action = routes.ProductController.postISBNInput()) {
-    @helper.inputText(productForm("author"))
-    @helper.inputText(productForm("title"))
-    @helper.inputText(productForm("productid"))
-    @helper.inputText(productForm("manufacturer"))
-    @helper.inputText(productForm("productgroup"))
-    @helper.inputText(productForm("productidtype"))
-    @helper.inputText(productForm("productIndex"))
-    @helper.inputText(productForm("imageURL"))
-    @helper.inputText(productForm("imageLargeURL"))
-    @helper.inputText(productForm("source"))
-    @helper.inputText(productForm("sourceid"))
-    <button name="Save">Save</button>
-    }
-
+    @helper.form(action = routes.ProductController.saveProduct()) {
+    <div class="product_box">
+        <div class="addProduct_icon"><img  src="@productForm("imageLargeURL").value"></div>
+        <div class="addProduct_content">
+            <div class="addProduct_details">
+                <p>@helper.inputText(productForm("author"))</p>
+                <p>@helper.inputText(productForm("title"))</p>
+                <p>@helper.inputText(productForm("productid"))</p>
+                <p>@helper.inputText(productForm("manufacturer"))</p>
+                <p>@helper.inputText(productForm("productgroup"))</p>
+                <p>@helper.inputText(productForm("productidtype"))</p>
+                <p>@helper.inputText(productForm("productIndex"))</p>
+                <p>@helper.inputText(productForm("imageURL"))</p>
+                <p>@helper.inputText(productForm("imageLargeURL"))</p>
+                <p>@helper.inputText(productForm("source"))</p>
+                <p>@helper.inputText(productForm("sourceid"))</p>
+            </div>
+            <button name="Save">Save</button>
+        </div>
+    </div>
 </div>
+}
 }

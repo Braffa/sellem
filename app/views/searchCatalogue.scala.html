@@ -2,7 +2,7 @@
 
 @main("Sell My Things") {
 <div class="features">
-    @helper.form(action = routes.RegisteredUserController.postRegisterUser()) {
+    @helper.form(action = routes.ProductController.postSearchCatalog()) {
     @helper.inputText(searchCatalogueForm("author"))
     @helper.inputText(searchCatalogueForm("title"))
     @helper.inputText(searchCatalogueForm("productId"))

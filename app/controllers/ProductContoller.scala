@@ -4,8 +4,10 @@ http://stackoverflow.com/questions/4170949/how-to-parse-json-in-scala-using-stan
  */
 
 
+import java.net.{URLEncoder, URI, URL}
+
 import com.sun.org.apache.xalan.internal.xsltc.trax.DOM2SAX
-import forms.{ProductForm, SearchCatalogueForm}
+import forms.{AddProductForm, ProductForm, SearchCatalogueForm}
 import org.joda.time.DateTime
 import org.w3c.dom.{Element, NodeList, Document}
 import views.html.helper.form
@@ -35,46 +37,6 @@ object ProductController extends Controller {
   var lOfProducts = ListBuffer [Product]()
 
   def convertDate (strDate: String): DateTime = new DateTime(java.lang.Long.parseLong(strDate))
-
-  def  listProducts = Action.async {
-    Logger.info("ProductController listProducts")
-
-    lOfProducts = ListBuffer [Product]()
-
-    val responseFuture = WS.url("http://localhost:9010/listJsonProducts").get()
-
-    responseFuture map { response =>
-      response.status match {
-        case 200 => {
-          val products = Json.toJson(response.json)
-          var index = 0
-          for (s <- (products \\ "_id")) {
-            val product = new Product (
-              (products \\ "_id")(index).toString.replace('"', ' ').trim,
-              (products \\ "author")(index).toString.replace('"', ' ').trim,
-              (products \\ "imageURL")(index).toString.replace('"', ' ').trim,
-              (products \\ "imageLargeURL")(index).toString.replace('"', ' ').trim,
-              (products \\ "manufacturer")(index).toString.replace('"', ' ').trim,
-              (products \\ "productIndex")(index).toString.replace('"', ' ').trim,
-              (products \\ "productgroup")(index).toString.replace('"', ' ').trim,
-              (products \\ "productId")(index).toString.replace('"', ' ').trim,
-              (products \\ "productidtype")(index).toString.replace('"', ' ').trim,
-              (products \\ "source")(index).toString.replace('"', ' ').trim,
-              (products \\ "sourceid")(index).toString.replace('"', ' ').trim,
-              (products \\ "title")(index).toString.replace('"', ' ').trim,
-              convertDate((products \\ "crDate")(index).toString.replace('"', ' ').trim),
-              convertDate((products \\ "updDate")(index).toString.replace('"', ' ').trim)
-            )
-            Logger.info(product.toString)
-            lOfProducts += product
-            index += 1
-          }
-          Ok(views.html.listProducts("List of All products")((lOfProducts)))
-        }
-        case _ => Ok("got here ")
-      }
-    }
-  }
 
   def findMyProducts = Action.async {
     Logger.info("ProductController findMyProducts")
@@ -114,7 +76,43 @@ object ProductController extends Controller {
         case _ => Ok("got here ")
       }
     }
+  }
 
+  def  listProducts = Action.async {
+    Logger.info("ProductController listProducts")
+    lOfProducts = ListBuffer [Product]()
+    val responseFuture = WS.url("http://localhost:9010/listJsonProducts").get()
+    responseFuture map { response =>
+      response.status match {
+        case 200 => {
+          val products = Json.toJson(response.json)
+          var index = 0
+          for (s <- (products \\ "_id")) {
+            val product = new Product (
+              (products \\ "_id")(index).toString.replace('"', ' ').trim,
+              (products \\ "author")(index).toString.replace('"', ' ').trim,
+              (products \\ "imageURL")(index).toString.replace('"', ' ').trim,
+              (products \\ "imageLargeURL")(index).toString.replace('"', ' ').trim,
+              (products \\ "manufacturer")(index).toString.replace('"', ' ').trim,
+              (products \\ "productIndex")(index).toString.replace('"', ' ').trim,
+              (products \\ "productgroup")(index).toString.replace('"', ' ').trim,
+              (products \\ "productId")(index).toString.replace('"', ' ').trim,
+              (products \\ "productidtype")(index).toString.replace('"', ' ').trim,
+              (products \\ "source")(index).toString.replace('"', ' ').trim,
+              (products \\ "sourceid")(index).toString.replace('"', ' ').trim,
+              (products \\ "title")(index).toString.replace('"', ' ').trim,
+              convertDate((products \\ "crDate")(index).toString.replace('"', ' ').trim),
+              convertDate((products \\ "updDate")(index).toString.replace('"', ' ').trim)
+            )
+            Logger.info(product.toString)
+            lOfProducts += product
+            index += 1
+          }
+          Ok(views.html.listProducts("List of All products")((lOfProducts)))
+        }
+        case _ => Ok("got here ")
+      }
+    }
   }
 
   lazy val searchCatalogueMapping: Mapping[SearchCatalogueForm] =
@@ -183,6 +181,18 @@ object ProductController extends Controller {
     )
     }
 
+  lazy val addProductFormMapping: Mapping[AddProductForm] =
+    mapping(
+      "productid" -> text
+    )(AddProductForm.apply)(AddProductForm.unapply)
+
+  var addProductForm = Form[AddProductForm](addProductFormMapping)
+
+  def showAddProductForm = Action {
+    Logger.info("ProductController showAddProductForm")
+    Ok(views.html.addProductForm(addProductForm))
+  }
+
   lazy val productFormMapping: Mapping[ProductForm] =
     mapping(
       "author"  -> text,
@@ -200,11 +210,8 @@ object ProductController extends Controller {
 
   var productForm = Form[ProductForm](productFormMapping)
 
-
   def showProductForm = Action {
     Logger.info("ProductController showProductForm")
-    //productLookUp ("5060088823156", "EAN")
-    //val product = lOfProducts (0)
     Ok(views.html.productForm(productForm))
   }
 
@@ -221,18 +228,17 @@ object ProductController extends Controller {
     val responseGroup = null
     val condition = null
     val searchIndex = "All"
-    val imageType = "ThumbnailImage"
+    val imageType = null
     val document = ProductLookUp.getProductsWithImage (productId, productIdType, responseGroup, condition, searchIndex, imageType)
     val products = asXml(document)
     Logger.info(products.toString())
     lOfProducts = ListBuffer [Product]()
     for (product <- (products \\ "product")) {
-      Logger.info ("image url - " + (product \ "ImageSet" \ "ThumbnailImage").text)
       val p = new Product (
         "newProduct",
         (product \ "author").text,
         (product \ "ImageSet" \ "ThumbnailImage" \ "URL").text,
-        (product \ "ImageSet" \ "ThumbnailImage" \ "URL").text,
+        (product \ "ImageSet" \ "LargeImage" \ "URL").text,
         (product \ "manufacturer").text,
         "0",
         (product \ "productgroup").text,
@@ -243,35 +249,38 @@ object ProductController extends Controller {
         (product \ "title").text,
         new DateTime(),
         new DateTime()
-        )
+      )
       lOfProducts += p
       Logger.info(p.toString)
     }
   }
 
-  def postISBNInput = Action { implicit request =>
-    Logger.info("ProductController postISBNInput")
-    productForm.bindFromRequest.fold (
+  def postISBNAddProduct = Action { implicit request =>
+    Logger.info("ProductController postISBNAddProduct")
+    addProductForm.bindFromRequest.fold (
       formWithErrors => {
         Logger.info("form had errors" + formWithErrors.errorsAsJson)
         Ok("fucked Up")
-        //Future.successful(BadRequest( views.html.productForm(formWithErrors)))
+        //Future.successful(BadRequest( views.html.addProductForm(formWithErrors)))
       },
-      productFormIn => {
-        Logger.info(productForm.toString)
-        val productId = productFormIn.productid
+      addProductFormIn => {
+        Logger.info(addProductForm.toString)
+        val productId = addProductFormIn.productid.replaceAll("[-]", "")
         productLookUp(productId, "EAN")
-        Logger.info("list size " + lOfProducts.size)
+        if (lOfProducts.size == 0) {
+          productLookUp(productId, "ISBN")
+        }
         if (lOfProducts.size > 1) {
           Ok(views.html.listProducts("List of All products")((lOfProducts)))
-        } else {
-          val product = lOfProducts (0)
-          var pf = new ProductForm (product.author, product.title, product.productId, product.manufacturer,
-                              product.productgroup, product.productidtype, product.productIndex,
-                              product.imageURL, product.imageLargeURL, product.source, product.sourceid)
-          Logger.info("set up the productform" + pf.toString)
+        } else if (lOfProducts.size == 1) {
+          val product = lOfProducts(0)
+          var pf = new ProductForm(product.author, product.title, product.productId, product.manufacturer,
+            product.productgroup, product.productidtype, product.productIndex,
+            product.imageURL, product.imageLargeURL, product.source, product.sourceid)
           val filledform = productForm.fill(pf)
           Ok(views.html.productForm(filledform))
+        } else {
+          Ok(views.html.productForm(productForm))
         }
       }
     )
@@ -314,4 +323,41 @@ object ProductController extends Controller {
       }
     )
   }
+
+  def saveProduct = Action.async { implicit request =>
+    Logger.info("ProductController saveProduct")
+    //if (lOfProducts.size > 1) {
+      val product = lOfProducts (0)
+
+    Logger.info("saveProduct - " + product.toString)
+
+    val urlPar = "?author=" + URLEncoder.encode(product.author, "UTF-8") +
+      "&imageURL=" + product.imageURL +
+      "&imageLargeURL=" + product.imageLargeURL +
+      "&manufacturer=" + URLEncoder.encode(product.manufacturer, "UTF-8") +
+      "&productIndex=" + URLEncoder.encode(product.productIndex, "UTF-8") +
+      "&productgroup=" + URLEncoder.encode(product.productgroup, "UTF-8") +
+      "&productid=" + URLEncoder.encode(product.productId, "UTF-8") +
+      "&productidtype=" + URLEncoder.encode(product.productidtype, "UTF-8") +
+      "&source=" + URLEncoder.encode(product.source, "UTF-8") +
+      "&sourceid=" + URLEncoder.encode(product.sourceid, "UTF-8") +
+      "&title=" + URLEncoder.encode(product.title, "UTF-8")
+    Logger.info(urlPar)
+    val urlStr = "http://localhost:9010/addproduct" + urlPar
+    Logger.info(urlStr)
+    val responseFuture = WS.url(urlStr).get()
+      responseFuture map { response =>
+        response.status match {
+          case 200 => {
+            Redirect(routes.ProductController.listProducts)
+          }
+          case _ => {
+            Logger.info("help " + response.status)
+            Ok("ProductController postProductInput - got here 2")
+          }
+        }
+      }
+    }
+
+  //}
 }
