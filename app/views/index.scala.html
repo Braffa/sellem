@@ -1,13 +1,6 @@
 @(loginForm: Form[forms.LoginForm])
-<!DOCTYPE html>
 
-<html>
-<head>
-    <title>Test Title</title>
-    <link rel="stylesheet" media="screen" href="assets/stylesheets/main.css">
-    <script src="assets/javascripts/generic.js" type="text/javascript"></script>
-</head>
-<body>
+@main("Sell My Things") {
 <div class="center_left">
     <div class="title_welcome"><span class="red">FREE</span> Hosting Control Panel</div>
     <div class="welcome_box">
@@ -44,7 +37,7 @@
     </div>
 </div>
 <div class="center_right">
-    <div class="software_box"><img src="images/3dbox.gif" alt="" title="" /></div>
+    <div class="software_box"><img src="assets/images/3dbox.gif" alt="" title="" /></div>
     @helper.form(action = routes.LoginController.post()) {
     <div class="text_box">
         <div class="title">Clients login</div>
@@ -71,3 +64,4 @@
     </div>
 </div>
 <div class="clear"></div>
+}

@@ -10,6 +10,7 @@ import com.sun.org.apache.xalan.internal.xsltc.trax.DOM2SAX
 import forms.{AddProductForm, ProductForm, SearchCatalogueForm}
 import org.joda.time.DateTime
 import org.w3c.dom.{Element, NodeList, Document}
+//import play.libs.Json
 import views.html.helper.form
 
 import scala.xml.Node
@@ -48,29 +49,7 @@ object ProductController extends Controller {
     responseFuture map { response =>
       response.status match {
         case 200 => {
-          val products = Json.toJson(response.json)
-          var index = 0
-          for (s <- (products \\ "_id")) {
-            val product = new Product(
-              (products \\ "_id")(index).toString.replace('"', ' ').trim,
-              (products \\ "author")(index).toString.replace('"', ' ').trim,
-              (products \\ "imageURL")(index).toString.replace('"', ' ').trim,
-              (products \\ "imageLargeURL")(index).toString.replace('"', ' ').trim,
-              (products \\ "manufacturer")(index).toString.replace('"', ' ').trim,
-              (products \\ "productIndex")(index).toString.replace('"', ' ').trim,
-              (products \\ "productgroup")(index).toString.replace('"', ' ').trim,
-              (products \\ "productId")(index).toString.replace('"', ' ').trim,
-              (products \\ "productidtype")(index).toString.replace('"', ' ').trim,
-              (products \\ "source")(index).toString.replace('"', ' ').trim,
-              (products \\ "sourceid")(index).toString.replace('"', ' ').trim,
-              (products \\ "title")(index).toString.replace('"', ' ').trim,
-              convertDate((products \\ "crDate")(index).toString.replace('"', ' ').trim),
-              convertDate((products \\ "updDate")(index).toString.replace('"', ' ').trim)
-            )
-            Logger.info(product.toString)
-            lOfProducts += product
-            index += 1
-          }
+          lOfProducts = jsonToLOfProducts(Json.toJson(response.json))
           Ok(views.html.listProducts("List of All products")((lOfProducts)))
         }
         case _ => Ok("got here ")
@@ -85,29 +64,7 @@ object ProductController extends Controller {
     responseFuture map { response =>
       response.status match {
         case 200 => {
-          val products = Json.toJson(response.json)
-          var index = 0
-          for (s <- (products \\ "_id")) {
-            val product = new Product (
-              (products \\ "_id")(index).toString.replace('"', ' ').trim,
-              (products \\ "author")(index).toString.replace('"', ' ').trim,
-              (products \\ "imageURL")(index).toString.replace('"', ' ').trim,
-              (products \\ "imageLargeURL")(index).toString.replace('"', ' ').trim,
-              (products \\ "manufacturer")(index).toString.replace('"', ' ').trim,
-              (products \\ "productIndex")(index).toString.replace('"', ' ').trim,
-              (products \\ "productgroup")(index).toString.replace('"', ' ').trim,
-              (products \\ "productId")(index).toString.replace('"', ' ').trim,
-              (products \\ "productidtype")(index).toString.replace('"', ' ').trim,
-              (products \\ "source")(index).toString.replace('"', ' ').trim,
-              (products \\ "sourceid")(index).toString.replace('"', ' ').trim,
-              (products \\ "title")(index).toString.replace('"', ' ').trim,
-              convertDate((products \\ "crDate")(index).toString.replace('"', ' ').trim),
-              convertDate((products \\ "updDate")(index).toString.replace('"', ' ').trim)
-            )
-            Logger.info(product.toString)
-            lOfProducts += product
-            index += 1
-          }
+          lOfProducts = jsonToLOfProducts(Json.toJson(response.json))
           Ok(views.html.listProducts("List of All products")((lOfProducts)))
         }
         case _ => Ok("got here ")
@@ -134,7 +91,6 @@ object ProductController extends Controller {
   def postSearchCatalog  = Action.async { implicit request =>
     Logger.info("ProductController postSearchCatalog")
     lOfProducts = ListBuffer [Product]()
-
     searchCatalogueForm.bindFromRequest.fold (
       formWithErrors => {
         println("Form had errors")
@@ -149,29 +105,7 @@ object ProductController extends Controller {
         responseFuture map { response =>
           response.status match {
             case 200 => {
-              val products = Json.toJson(response.json)
-              var index = 0
-              for (s <- (products \\ "_id")) {
-                val product = new Product(
-                  (products \\ "_id")(index).toString.replace('"', ' ').trim,
-                  (products \\ "author")(index).toString.replace('"', ' ').trim,
-                  (products \\ "imageURL")(index).toString.replace('"', ' ').trim,
-                  (products \\ "imageLargeURL")(index).toString.replace('"', ' ').trim,
-                  (products \\ "manufacturer")(index).toString.replace('"', ' ').trim,
-                  (products \\ "productIndex")(index).toString.replace('"', ' ').trim,
-                  (products \\ "productgroup")(index).toString.replace('"', ' ').trim,
-                  (products \\ "productId")(index).toString.replace('"', ' ').trim,
-                  (products \\ "productidtype")(index).toString.replace('"', ' ').trim,
-                  (products \\ "source")(index).toString.replace('"', ' ').trim,
-                  (products \\ "sourceid")(index).toString.replace('"', ' ').trim,
-                  (products \\ "title")(index).toString.replace('"', ' ').trim,
-                  convertDate((products \\ "crDate")(index).toString.replace('"', ' ').trim),
-                  convertDate((products \\ "updDate")(index).toString.replace('"', ' ').trim)
-                )
-                Logger.info(product.toString)
-                lOfProducts += product
-                index += 1
-              }
+              lOfProducts = jsonToLOfProducts(Json.toJson(response.json))
               Ok(views.html.listProducts("List of All products")((lOfProducts)))
             }
             case _ => Ok("got here ")
@@ -180,6 +114,34 @@ object ProductController extends Controller {
       }
     )
     }
+
+  def jsonToLOfProducts (products: JsValue) : ListBuffer[Product] = {
+    Logger.info("ProductController jsonToLOfProducts")
+    lOfProducts = ListBuffer[Product]()
+    var index = 0
+    for (s <- (products \\ "_id")) {
+      val product = new Product(
+        (products \\ "_id")(index).toString.replace('"', ' ').trim,
+        (products \\ "author")(index).toString.replace('"', ' ').trim,
+        (products \\ "imageURL")(index).toString.replace('"', ' ').trim,
+        (products \\ "imageLargeURL")(index).toString.replace('"', ' ').trim,
+        (products \\ "manufacturer")(index).toString.replace('"', ' ').trim,
+        (products \\ "productIndex")(index).toString.replace('"', ' ').trim,
+        (products \\ "productgroup")(index).toString.replace('"', ' ').trim,
+        (products \\ "productId")(index).toString.replace('"', ' ').trim,
+        (products \\ "productidtype")(index).toString.replace('"', ' ').trim,
+        (products \\ "source")(index).toString.replace('"', ' ').trim,
+        (products \\ "sourceid")(index).toString.replace('"', ' ').trim,
+        (products \\ "title")(index).toString.replace('"', ' ').trim,
+        convertDate((products \\ "crDate")(index).toString.replace('"', ' ').trim),
+        convertDate((products \\ "updDate")(index).toString.replace('"', ' ').trim)
+      )
+      Logger.info(product.toString)
+      lOfProducts += product
+      index += 1
+    }
+    lOfProducts
+  }
 
   lazy val addProductFormMapping: Mapping[AddProductForm] =
     mapping(
@@ -326,9 +288,7 @@ object ProductController extends Controller {
 
   def saveProduct = Action.async { implicit request =>
     Logger.info("ProductController saveProduct")
-    //if (lOfProducts.size > 1) {
-      val product = lOfProducts (0)
-
+    val product = lOfProducts (0)
     Logger.info("saveProduct - " + product.toString)
 
     val urlPar = "?author=" + URLEncoder.encode(product.author, "UTF-8") +
@@ -359,5 +319,4 @@ object ProductController extends Controller {
       }
     }
 
-  //}
 }
